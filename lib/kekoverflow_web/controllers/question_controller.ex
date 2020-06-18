@@ -1,8 +1,7 @@
 defmodule KekoverflowWeb.QuestionController do
   use KekoverflowWeb, :controller
 
-  alias Kekoverflow.Questions
-  alias Kekoverflow.Questions.Question
+  alias Kekoverflow.{Repo, Questions.Question, Questions}
 
   def index(conn, _params) do
     questions = Questions.list_questions()
@@ -15,13 +14,14 @@ defmodule KekoverflowWeb.QuestionController do
   end
 
   def create(conn, %{"question" => question_params}) do
-    case Questions.create_question(question_params) do
+    user = conn.assigns.current_user.id
+    changeset = Question.changeset(%Question{user_id: user}, question_params)
+    case Repo.insert(changeset) do
       {:ok, question} ->
         conn
-        |> put_flash(:info, "Question created successfully.")
-        |> redirect(to: Routes.question_path(conn, :show, question))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
+        |> put_flash(:info, "Successfully created")
+        |> redirect(to: Routes.question_path(conn, :index))
+      {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
