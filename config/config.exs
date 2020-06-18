@@ -28,7 +28,17 @@ config :phoenix, :json_library, Jason
 
 config :kekoverflow, :pow,
        user: Kekoverflow.Users.User,
-       repo: Kekoverflow.Repo
+       repo: Kekoverflow.Repo,
+       web_module: KekoverflowWeb
+
+config :kekoverflow, :pow_assent,
+       providers: [
+         github: [
+           client_id: "dde10ee51304f6d7c8c6",
+           client_secret: "6712a7acacd3ce8de7932cae1c5d1c086d984aff",
+           strategy: Assent.Strategy.Github
+         ]
+       ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

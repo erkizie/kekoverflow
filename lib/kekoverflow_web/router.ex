@@ -1,6 +1,7 @@
 defmodule KekoverflowWeb.Router do
   use KekoverflowWeb, :router
   use Pow.Phoenix.Router
+  use PowAssent.Phoenix.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -19,16 +20,24 @@ defmodule KekoverflowWeb.Router do
          error_handler: Pow.Phoenix.PlugErrorHandler
   end
 
+  pipeline :skip_csrf_protection do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :put_secure_browser_headers
+  end
+
+  scope "/" do
+    pipe_through :skip_csrf_protection
+
+    pow_assent_authorization_post_callback_routes()
+  end
+
   scope "/" do
     pipe_through :browser
 
     pow_routes()
-  end
-
-  scope "/", KekoverflowWeb do
-    pipe_through [:browser]
-
-    resources "/", WelcomeController
+    pow_assent_routes()
   end
 
   scope "/", KekoverflowWeb do
@@ -37,6 +46,12 @@ defmodule KekoverflowWeb.Router do
     resources "/questions", QuestionController do
       resources "/answers", AnswerController
     end
+  end
+
+  scope "/", KekoverflowWeb do
+    pipe_through [:browser]
+
+    resources "/", WelcomeController
   end
 
   # Other scopes may use custom stacks.
