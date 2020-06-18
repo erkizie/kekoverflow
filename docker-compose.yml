@@ -1,0 +1,16 @@
+version: '3.5'
+services:
+  db:
+    image: postgres:11
+    ports:
+      - 5432:5432
+    volumes:
+      - .:/app:cached
+      - db-data:/var/lib/postgresql/data:cached
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kekoverflow_dev
+
+volumes:
+  db-data: null
