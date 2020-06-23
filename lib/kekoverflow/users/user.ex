@@ -7,6 +7,7 @@ defmodule Kekoverflow.Users.User do
     pow_user_fields()
 
     has_many :questions, Kekoverflow.Questions.Question
+    has_many :answers, through: [:questions, :answer]
 
     timestamps()
   end

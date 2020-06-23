@@ -6,13 +6,15 @@ defmodule Kekoverflow.Questions.Question do
     field :body, :string
     field :rate, :integer
     field :title, :string
-    field :user_id, :id
+
+    belongs_to :user, Kekoverflow.Users.User
+    has_many :answers, Kekoverflow.Answers.Answer
 
     timestamps()
   end
 
   @doc false
-  def changeset(question, attrs) do
+  def changeset(question, attrs \\ %{}) do
     question
     |> cast(attrs, [:title, :body, :rate])
     |> validate_required([:title, :body, :rate])
