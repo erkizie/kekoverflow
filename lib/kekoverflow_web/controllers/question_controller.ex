@@ -1,7 +1,9 @@
 defmodule KekoverflowWeb.QuestionController do
   use KekoverflowWeb, :controller
+  use Ecto.Schema
+  require IEx
 
-  alias Kekoverflow.{Repo, Questions.Question, Questions}
+  alias Kekoverflow.{Repo, Questions.Question, Questions, Answers.Answer, Answers}
 
   def index(conn, _params) do
     questions = Questions.list_questions()
@@ -14,8 +16,13 @@ defmodule KekoverflowWeb.QuestionController do
   end
 
   def create(conn, %{"question" => question_params}) do
-    user = conn.assigns.current_user.id
-    changeset = Question.changeset(%Question{user_id: user}, question_params)
+    user = conn.assigns.current_user
+    changeset = user
+      |> Ecto.build_assoc(:questions)
+      |> Question.changeset(question_params)
+
+#    changeset = Question.changeset(%Question{user_id: user.id}, question_params)
+
     case Repo.insert(changeset) do
       {:ok, question} ->
         conn
@@ -27,8 +34,12 @@ defmodule KekoverflowWeb.QuestionController do
   end
 
   def show(conn, %{"id" => id}) do
-    question = Questions.get_question!(id)
-    render(conn, "show.html", question: question)
+    question = Questions.get_question!(id) |> Repo.preload(:answers)
+    answer_changeset = question
+                        |> Ecto.build_assoc(:answers)
+                        |> Answer.changeset()
+
+    render(conn, "show.html", question: question, answer_changeset: answer_changeset)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -46,7 +57,7 @@ defmodule KekoverflowWeb.QuestionController do
         |> put_flash(:info, "Question updated successfully.")
         |> redirect(to: Routes.question_path(conn, :show, question))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, changeset} ->
         render(conn, "edit.html", question: question, changeset: changeset)
     end
   end
