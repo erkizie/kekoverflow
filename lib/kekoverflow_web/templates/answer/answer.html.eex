@@ -1,0 +1,4 @@
+<div class="answer">
+  <h4><%= @answer.title %></h4>
+  <p><%= @answer.body %></p>
+</div>

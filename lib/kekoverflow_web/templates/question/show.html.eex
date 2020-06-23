@@ -21,3 +21,14 @@
 
 <span><%= link "Edit", to: Routes.question_path(@conn, :edit, @question) %></span>
 <span><%= link "Back", to: Routes.question_path(@conn, :index) %></span>
+
+
+<div class="answers">
+ <h3>Answers</h3>
+ <%= for answer <- @question.answers do %>
+   <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
+ <% end %>
+</div>
+
+<h3>Add answer:</h3>
+  <%= render KekoverflowWeb.AnswerView, "form.html", changeset: @answer_changeset, action: Routes.question_answer_path(@conn, :create, @question) %>
