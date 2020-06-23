@@ -44,7 +44,7 @@ defmodule KekoverflowWeb.Router do
     pipe_through [:browser, :protected]
 
     resources "/questions", QuestionController do
-      resources "/answers", AnswerController
+      resources "/answers", AnswerController, only: [:create, :delete, :update]
     end
   end
 
