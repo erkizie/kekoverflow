@@ -1,5 +1,5 @@
-<h1>New Question</h1>
+<h1 class="title">New Question</h1>
 
 <%= render "form.html", Map.put(assigns, :action, Routes.question_path(@conn, :create)) %>
 
-<span><%= link "Back", to: Routes.question_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.question_path(@conn, :index), class: "button is-text" %></span>

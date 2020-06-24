@@ -1,30 +1,33 @@
-<h1>Listing Questions</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Body</th>
-      <th>Rate</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for question <- @questions do %>
-    <tr>
-      <td><%= question.title %></td>
-      <td><%= question.body %></td>
-      <td><%= question.rate %></td>
-
-      <td>
-        <span><%= link "Show", to: Routes.question_path(@conn, :show, question) %></span>
-        <span><%= link "Edit", to: Routes.question_path(@conn, :edit, question) %></span>
-        <span><%= link "Delete", to: Routes.question_path(@conn, :delete, question), method: :delete, data: [confirm: "Are you sure?"] %></span>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<span><%= link "New Question", to: Routes.question_path(@conn, :new) %></span>
+<div class="container">
+        <section class="question">
+            <div class="column is-8 is-offset-2">
+                <div class="card question">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content has-text-centered">
+                                <p class="title">Kek Overflow</p>
+                                <div class="tags has-addons level-item">
+                                    <span class="tag is-rounded is-info">@erkizie</span>
+                                    <span class="tag is-rounded">June, 2020</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content article-body">
+                            <p>This project was created to reach some skills in web development using such an awesome technologies like Elixir and Phoenix</p>
+                            <span><%= link "Ask a Question", to: Routes.question_path(@conn, :new), class: "button is-link go-center" %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="card article">
+            <div class="card-content">
+                <div class="content article-body">
+                    <%= for question <- @questions do %>
+                        <h3 class="has-text-centered"><%= link question.title, to: Routes.question_path(@conn, :show, question) %></h3>
+                        <p><%= question.body %></p>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

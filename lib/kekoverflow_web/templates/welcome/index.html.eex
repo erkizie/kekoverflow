@@ -1,7 +1,14 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Kekoverflow" %></h1>
-  <p>The place where you can find everything you wish</p>
-  <h3>Questions and answers could be found here:</h3>
-  <%= link "Questions", to: Routes.question_path(@conn, :index) %>
-</section>
+<section class="section">
+  <h1 class="title">
+    <%= gettext "Welcome to %{name}!", name: "Kekoverflow" %>
+  </h1>
 
+  <p class="subtitle">
+    The place where you can find everything you wish
+  </p>
+
+  <p class="subtitle">
+    Questions and answers could be found here:
+    <%= link "Questions", to: Routes.question_path(@conn, :index) %>
+  </p>
+</section>

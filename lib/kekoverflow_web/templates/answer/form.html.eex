@@ -6,18 +6,16 @@
   <% end %>
 
   <%= label f, :title %>
-  <%= text_input f, :title %>
+  <%= text_input f, :title, class: "input is-info" %>
   <%= error_tag f, :title %>
 
   <%= label f, :body %>
-  <%= text_input f, :body %>
+  <%= textarea f, :body, class: "textarea is-primary" %>
   <%= error_tag f, :body %>
-
-  <%= label f, :rate %>
-  <%= number_input f, :rate %>
-  <%= error_tag f, :rate %>
-
+  <p>
+  .
+  </p>
   <div>
-    <%= submit "Save" %>
+    <%= submit "Save", class: "button is-primary" %>
   </div>
 <% end %>

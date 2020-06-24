@@ -1,34 +1,54 @@
-<h1>Show Question</h1>
-
-<ul>
-
-  <li>
-    <strong>Title:</strong>
-    <%= @question.title %>
-  </li>
-
-  <li>
-    <strong>Body:</strong>
-    <%= @question.body %>
-  </li>
-
-  <li>
-    <strong>Rate:</strong>
-    <%= @question.rate %>
-  </li>
-
-</ul>
-
-<span><%= link "Edit", to: Routes.question_path(@conn, :edit, @question) %></span>
-<span><%= link "Back", to: Routes.question_path(@conn, :index) %></span>
-
-
-<div class="answers">
- <h3>Answers</h3>
- <%= for answer <- @question.answers do %>
-   <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
- <% end %>
+<div class="container">
+        <section class="question">
+        <div class="card article">
+            <div class="card-content">
+                <div class="content article-body">
+                    <h3 class="title"><%= @question.title %></h3>
+                    <%= @question.body %>
+                </div>
+                <span>
+                    <%= link "Edit", to: Routes.question_path(@conn, :edit, @question) %> |
+                    <%= link "Back", to: Routes.question_path(@conn, :index) %> |
+                    <%= link "Delete", to: Routes.question_path(@conn, :delete, @question), method: :delete, data: [confirm: "Are you sure?"] %>
+                </span>
+            </div>
+        </div>
+    </section>
 </div>
 
-<h3>Add answer:</h3>
-  <%= render KekoverflowWeb.AnswerView, "form.html", changeset: @answer_changeset, action: Routes.question_answer_path(@conn, :create, @question) %>
+  <section class="comments">
+    <div class="column">
+      <div class="card comment">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content has-text-centered">
+              <p class="content is-medium"><b>Add Answer</b></p>
+            </div>
+          </div>
+            <%= render KekoverflowWeb.AnswerView, "form.html", changeset: @answer_changeset, action: Routes.question_answer_path(@conn, :create, @question) %>
+        </div>
+      </div>
+    </div>
+    <div class="comments-list">
+      <div class="column">
+        <div class="card comment">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content has-text-centered">
+                <p class="content is-medium"><b>Answers:</b></p>
+              </div>
+            </div>
+            <%= for answer <- @question.answers do %>
+                <div class="content comment-body">
+                     <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
+                </div>
+                <span>
+                    <%= link "Delete", to: Routes.question_answer_path(@conn, :delete, @question, answer), method: :delete, data: [confirm: "Are you sure?"] %>
+                </span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
