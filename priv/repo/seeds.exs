@@ -12,4 +12,4 @@
 
 alias Kekoverflow.{Repo, Answers.Answer}
 
-Repo.insert! %Answer{title: "Hello", body: "Here is solution for you", rate: 2, user_id: 1, question_id: 1}
+Repo.insert! %Answer{body: "Here is solution for you", rate: 2, user_id: 1, question_id: 1}

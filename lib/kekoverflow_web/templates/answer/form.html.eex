@@ -5,10 +5,6 @@
     </div>
   <% end %>
 
-  <%= label f, :title %>
-  <%= text_input f, :title, class: "input is-info" %>
-  <%= error_tag f, :title %>
-
   <%= label f, :body %>
   <%= textarea f, :body, class: "textarea is-primary" %>
   <%= error_tag f, :body %>

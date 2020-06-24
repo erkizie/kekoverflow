@@ -22,7 +22,7 @@
         <div class="card-content">
           <div class="media">
             <div class="media-content has-text-centered">
-              <p class="content is-medium"><b>Add Answer</b></p>
+              <p class="content is-medium"><b>Your answer</b></p>
             </div>
           </div>
             <%= render KekoverflowWeb.AnswerView, "form.html", changeset: @answer_changeset, action: Routes.question_answer_path(@conn, :create, @question) %>
