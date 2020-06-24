@@ -17,6 +17,6 @@ defmodule Kekoverflow.Questions.Question do
   def changeset(question, attrs \\ %{}) do
     question
     |> cast(attrs, [:title, :body, :rate])
-    |> validate_required([:title, :body, :rate])
+    |> validate_required([:title, :body])
   end
 end
