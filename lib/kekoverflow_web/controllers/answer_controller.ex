@@ -44,8 +44,10 @@ defmodule KekoverflowWeb.AnswerController do
     answer = Answers.get_answer!(id)
     {:ok, _answer} = Answers.delete_answer(answer)
 
+    question = Repo.get(Question, answer.question_id)
+
     conn
     |> put_flash(:info, "Answer deleted successfully.")
-    |> redirect(to: Routes.question_answer_path(conn, :index))
+    |> redirect(to: Routes.question_path(conn, :show, question))
   end
 end
