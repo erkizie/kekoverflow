@@ -11,6 +11,19 @@
                     <%= link "Back", to: Routes.question_path(@conn, :index) %> |
                     <%= link "Delete", to: Routes.question_path(@conn, :delete, @question), method: :delete, data: [confirm: "Are you sure?"] %>
                 </span>
+                <div>
+                <p style="color:black">
+                Comments:
+                </p>
+                    <%= for comment <- @question.comments do %>
+                        <%= render KekoverflowWeb.CommentView, "comment.html", comment: comment %>
+
+                        <%= link "Delete", class: "button is-text",
+                        to: Routes.question_comment_path(@conn, :delete, @question, comment),
+                        method: :delete, data: [confirm: "Are you sure?"] %>
+                    <% end %>
+                </div>
+                <%= render KekoverflowWeb.CommentView, "form.html", changeset: @comment_changeset, action: Routes.question_comment_path(@conn, :create, @question) %>
             </div>
         </div>
     </section>
@@ -38,13 +51,26 @@
                 <p class="content is-medium"><b>Answers:</b></p>
               </div>
             </div>
-            <%= for answer <- @question.answers do %>
+            <%= for answer <- @answers do %>
                 <div class="content comment-body">
-                     <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
+                    <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
                 </div>
                 <span>
-                    <%= link "Delete", to: Routes.question_answer_path(@conn, :delete, @question, answer), method: :delete, data: [confirm: "Are you sure?"] %>
+                    <%= link "Delete", class: "button btn-primary", to: Routes.question_answer_path(@conn, :delete, @question, answer), method: :delete, data: [confirm: "Are you sure?"] %>
                 </span>
+                <p style="color:black">
+                    Comments:
+                </p>
+                <%= for comment <- answer.comments do %>
+                    <%= render KekoverflowWeb.CommentView, "comment.html", comment: comment %>
+
+                        <%= link "Delete", class: "button is-text",
+                        to: Routes.question_answer_comment_path(@conn, :delete, @question, answer, comment),
+                        method: :delete, data: [confirm: "Are you sure?"] %>
+                <% end %>
+                <div>
+                    <%= render KekoverflowWeb.CommentView, "form.html", changeset: @comment_changeset, action: Routes.question_answer_comment_path(@conn, :create, @question, answer) %>
+                </div>
             <% end %>
           </div>
         </div>

@@ -3,7 +3,7 @@ defmodule KekoverflowWeb.QuestionController do
   use Ecto.Schema
   require IEx
 
-  alias Kekoverflow.{Repo, Questions.Question, Questions, Answers.Answer, Answers}
+  alias Kekoverflow.{Repo, Questions.Question, Questions, Answers.Answer, Answers, Comments.Comment, Comments}
 
   def index(conn, _params) do
     questions = Questions.list_questions()
@@ -34,12 +34,22 @@ defmodule KekoverflowWeb.QuestionController do
   end
 
   def show(conn, %{"id" => id}) do
-    question = Questions.get_question!(id) |> Repo.preload(:answers)
+    question = Questions.get_question!(id) |> Repo.preload(:answers) |> Repo.preload(:comments)
+
+    answers = for answer <- question.answers do
+                answer |> Repo.preload(:comments)
+              end
+
     answer_changeset = question
                         |> Ecto.build_assoc(:answers)
                         |> Answer.changeset()
 
-    render(conn, "show.html", question: question, answer_changeset: answer_changeset)
+    comment_changeset = question
+                        |> Ecto.build_assoc(:answers)
+                        |> Ecto.build_assoc(:comments)
+                        |> Comment.changeset()
+
+    render(conn, "show.html", question: question, answers: answers, answer_changeset: answer_changeset, comment_changeset: comment_changeset)
   end
 
   def edit(conn, %{"id" => id}) do

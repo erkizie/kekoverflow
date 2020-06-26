@@ -1,0 +1,4 @@
+<div class="answer">
+  <p style="color:skyblue">User <%= @comment.user_id%>:</p>
+  <p> - <%= @comment.body %></p>
+</div>
