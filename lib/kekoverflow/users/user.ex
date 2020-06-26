@@ -8,6 +8,7 @@ defmodule Kekoverflow.Users.User do
 
     has_many :questions, Kekoverflow.Questions.Question
     has_many :answers, through: [:questions, :answer]
+    has_many :comments, Kekoverflow.Comments.Comment
 
     timestamps()
   end

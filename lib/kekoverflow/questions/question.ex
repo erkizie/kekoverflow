@@ -9,6 +9,7 @@ defmodule Kekoverflow.Questions.Question do
 
     belongs_to :user, Kekoverflow.Users.User
     has_many :answers, Kekoverflow.Answers.Answer
+    has_many :comments, Kekoverflow.Comments.Comment
 
     timestamps()
   end
