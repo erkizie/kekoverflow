@@ -18,7 +18,7 @@ defmodule Kekoverflow.Answers.Answer do
   @doc false
   def changeset(answer, attrs \\ %{}) do
     answer
-    |> cast(attrs, [:body, :rate])
+    |> cast(attrs, [:body, :rate, :user_id])
     |> validate_required([:body])
   end
 end

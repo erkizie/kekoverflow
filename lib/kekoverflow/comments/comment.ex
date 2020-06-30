@@ -14,7 +14,7 @@ defmodule Kekoverflow.Comments.Comment do
   @doc false
   def changeset(comment, attrs \\ %{}) do
     comment
-    |> cast(attrs, [:body])
+    |> cast(attrs, [:body, :user_id, :question_id, :answer_id])
     |> validate_required([:body])
   end
 end
