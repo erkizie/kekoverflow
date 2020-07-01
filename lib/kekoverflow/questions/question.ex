@@ -8,8 +8,9 @@ defmodule Kekoverflow.Questions.Question do
     field :title, :string
 
     belongs_to :user, Kekoverflow.Users.User
-    has_many :answers, Kekoverflow.Answers.Answer
-    has_many :comments, Kekoverflow.Comments.Comment
+    has_many :answers, Kekoverflow.Answers.Answer, on_delete: :delete_all
+    has_many :comments, Kekoverflow.Comments.Comment, on_delete: :delete_all
+    many_to_many :tags, Kekoverflow.Questions.Tag, join_through: "question_tags", on_delete: :delete_all
 
     timestamps()
   end
@@ -17,7 +18,7 @@ defmodule Kekoverflow.Questions.Question do
   @doc false
   def changeset(question, attrs \\ %{}) do
     question
-    |> cast(attrs, [:title, :body, :rate])
+    |> cast(attrs, [:title, :body, :rate, :user_id])
     |> validate_required([:title, :body])
   end
 end

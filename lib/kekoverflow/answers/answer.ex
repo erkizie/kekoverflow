@@ -10,7 +10,7 @@ defmodule Kekoverflow.Answers.Answer do
 
     belongs_to :user, Kekoverflow.Users.User
     belongs_to :question, Kekoverflow.Questions.Question
-    has_many :comments, Kekoverflow.Comments.Comment
+    has_many :comments, Kekoverflow.Comments.Comment, on_delete: :delete_all
 
     timestamps()
   end
