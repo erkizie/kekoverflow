@@ -18,7 +18,7 @@ defmodule Kekoverflow.Questions do
 
   """
   def list_questions do
-    Repo.all(Question)
+    Repo.all(Question) |> Repo.preload(:tags)
   end
 
   @doc """

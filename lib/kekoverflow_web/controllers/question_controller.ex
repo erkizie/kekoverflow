@@ -12,11 +12,14 @@ defmodule KekoverflowWeb.QuestionController do
 
   def new(conn, _params) do
     changeset = Questions.change_question(%Question{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: changeset, tags: [])
   end
 
   def create(conn, %{"question" => question_params}) do
     user = conn.assigns.current_user
+
+    tags = String.split(question_params["add_tags"], ", ")
+
     changeset = user
       |> Ecto.build_assoc(:questions)
       |> Question.changeset(question_params)
@@ -25,6 +28,7 @@ defmodule KekoverflowWeb.QuestionController do
 
     case Repo.insert(changeset) do
       {:ok, question} ->
+      Enum.each(tags, fn tag -> Questions.add_tag(question, tag) end)
         conn
         |> put_flash(:info, "Successfully created")
         |> redirect(to: Routes.question_path(conn, :index))
@@ -34,7 +38,7 @@ defmodule KekoverflowWeb.QuestionController do
   end
 
   def show(conn, %{"id" => id}) do
-    question = Questions.get_question!(id) |> Repo.preload(:answers) |> Repo.preload(:comments)
+    question = Questions.get_question!(id)
 
     answers = for answer <- question.answers do
                 answer |> Repo.preload(:comments)

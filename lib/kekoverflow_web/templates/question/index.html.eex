@@ -25,6 +25,13 @@
                     <%= for question <- @questions do %>
                         <h3 class="has-text-centered"><%= link question.title, to: Routes.question_path(@conn, :show, question) %></h3>
                         <p><%= question.body %></p>
+                        <p>Tags:
+                            <%= for tag <- question.tags do %>
+                                <%= link to: Routes.tag_path(@conn, :tagged, tag) do %>
+                                    <%= tag.text %>
+                                <% end %> |
+                            <% end %>
+                        </p>
                     <% end %>
                 </div>
             </div>

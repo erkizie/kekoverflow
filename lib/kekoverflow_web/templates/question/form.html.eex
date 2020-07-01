@@ -19,6 +19,13 @@
     </div>
   </div>
 
+    <div class="field">
+      <div class="control">
+          <p>Tags:</p>
+            <%= textarea f, :add_tags, class: "textarea is-small", placeholder: "Tags" %>
+      </div>
+    </div>
+
   <div>
     <%= submit "Save", class: "button is-primary" %>
   </div>

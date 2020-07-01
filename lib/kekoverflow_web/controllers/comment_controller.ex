@@ -2,7 +2,7 @@ defmodule KekoverflowWeb.CommentController do
   use KekoverflowWeb, :controller
   require IEx
 
-  alias Kekoverflow.{Repo, Questions.Question, Questions, Answers.Answer, Answers, Comments.Comment, Comments}
+  alias Kekoverflow.{Repo, Questions.Question, Answers.Answer, Comments.Comment, Comments}
 
   def create(conn, %{"comment" => comment_params, "question_id" => question_id, "answer_id" => answer_id}) do
 
@@ -15,7 +15,7 @@ defmodule KekoverflowWeb.CommentController do
 
     changeset = Comment.changeset(%Comment{user_id: user.id, question_id: question_id, answer_id: answer_id}, comment_params)
     case Repo.insert(changeset) do
-      {:ok, comment} ->
+      {:ok, _comment} ->
         conn
         |> put_flash(:info, "Comment created successfully.")
         |> redirect(to: Routes.question_path(conn, :show, question_id))
@@ -33,7 +33,7 @@ defmodule KekoverflowWeb.CommentController do
 
     changeset = Comment.changeset(%Comment{user_id: user.id, question_id: question_id}, comment_params)
     case Repo.insert(changeset) do
-      {:ok, comment} ->
+      {:ok, _comment} ->
         conn
         |> put_flash(:info, "Comment created successfully.")
         |> redirect(to: Routes.question_path(conn, :show, question_id))
@@ -43,19 +43,19 @@ defmodule KekoverflowWeb.CommentController do
     end
   end
 
-  def update(conn, %{"id" => id, "comment" => comment_params}) do
-    comment = Comments.get_comment!(id)
-
-    case Comments.update_comment(comment, comment_params) do
-      {:ok, comment} ->
-        conn
-        |> put_flash(:info, "Comment updated successfully.")
-        |> redirect(to: Routes.comment_path(conn, :show, comment))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", comment: comment, changeset: changeset)
-    end
-  end
+#  def update(conn, %{"id" => id, "comment" => comment_params}) do
+#    comment = Comments.get_comment!(id)
+#
+#    case Comments.update_comment(comment, comment_params) do
+#      {:ok, comment} ->
+#        conn
+#        |> put_flash(:info, "Comment updated successfully.")
+#        |> redirect(to: Routes.comment_path(conn, :show, comment))
+#
+#      {:error, %Ecto.Changeset{} = changeset} ->
+#        render(conn, "edit.html", comment: comment, changeset: changeset)
+#    end
+#  end
 
   def delete(conn, %{"id" => id}) do
     comment = Comments.get_comment!(id)

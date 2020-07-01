@@ -18,6 +18,9 @@
                <%= @current_user.email %>
              </li>
              <li>
+               <%= link "Edit profile", to: Routes.pow_registration_path(@conn, :edit) %>
+             </li>
+             <li>
                <%= link "Sign out", to: Routes.pow_session_path(@conn, :delete), method: :delete %>
              </li>
            <% else %>

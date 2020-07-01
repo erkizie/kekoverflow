@@ -43,6 +43,9 @@ defmodule KekoverflowWeb.Router do
   scope "/", KekoverflowWeb do
     pipe_through [:browser, :protected]
 
+    resources "/tags", TagController
+    get "/tagged/:tag", TagController, :tagged
+
     resources "/questions", QuestionController do
       resources "/comments", CommentController, only: [:create, :delete, :update]
       resources "/answers", AnswerController, only: [:create, :delete, :update] do

@@ -6,6 +6,14 @@
                     <h3 class="title"><%= @question.title %></h3>
                     <%= @question.body %>
                 </div>
+                <div>
+                <p>Tags:</p>
+                    <%= for tag <- @question.tags do %> |
+                        <%= link to: Routes.tag_path(@conn, :tagged, tag) do %>
+                            <%= tag.text %>
+                        <% end %>
+                    <% end %>
+                </div>
                 <span>
                     <%= link "Edit", to: Routes.question_path(@conn, :edit, @question) %> |
                     <%= link "Back", to: Routes.question_path(@conn, :index) %> |
