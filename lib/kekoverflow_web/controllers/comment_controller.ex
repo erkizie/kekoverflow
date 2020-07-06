@@ -1,8 +1,10 @@
 defmodule KekoverflowWeb.CommentController do
   use KekoverflowWeb, :controller
-  require IEx
+  import Kekoverflow.Authorization
 
   alias Kekoverflow.{Repo, Questions.Question, Answers.Answer, Comments.Comment, Comments}
+
+  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Comments.Comment
 
   def create(conn, %{"comment" => comment_params, "question_id" => question_id, "answer_id" => answer_id}) do
 

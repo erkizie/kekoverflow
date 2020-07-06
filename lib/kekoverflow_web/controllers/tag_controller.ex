@@ -1,8 +1,11 @@
 defmodule KekoverflowWeb.TagController do
   use KekoverflowWeb, :controller
+  import Kekoverflow.Authorization
 
   alias Kekoverflow.Questions
   alias Kekoverflow.Questions.Tag
+
+  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Questions.Tag
 
   def index(conn, _params) do
     tags = Questions.list_tags()

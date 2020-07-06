@@ -1,9 +1,11 @@
 defmodule KekoverflowWeb.AnswerController do
   use KekoverflowWeb, :controller
   import Ecto
-  require IEx
+  import Kekoverflow.Authorization
 
   alias Kekoverflow.{Repo, Answers.Answer, Answers, Questions, Questions.Question}
+
+  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Answers.Answer
 
   def create(conn, %{"answer" => answer_params, "question_id" => question_id}) do
     user = conn.assigns.current_user

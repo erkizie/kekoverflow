@@ -1,9 +1,10 @@
 defmodule KekoverflowWeb.QuestionController do
   use KekoverflowWeb, :controller
   use Ecto.Schema
-  require IEx
-
+  import Kekoverflow.Authorization
   alias Kekoverflow.{Repo, Questions.Question, Questions, Answers.Answer, Answers, Comments.Comment, Comments}
+
+  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Questions.Question
 
   def index(conn, _params) do
     questions = Questions.list_questions()

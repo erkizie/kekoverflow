@@ -4,6 +4,7 @@ defmodule Kekoverflow.Users.User do
   use PowAssent.Ecto.Schema
 
   schema "users" do
+    field :role, :string, default: "user"
     pow_user_fields()
 
     has_many :questions, Kekoverflow.Questions.Question
