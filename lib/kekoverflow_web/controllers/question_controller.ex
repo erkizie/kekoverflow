@@ -29,7 +29,8 @@ defmodule KekoverflowWeb.QuestionController do
 
     case Repo.insert(changeset) do
       {:ok, question} ->
-      Enum.each(tags, fn tag -> Questions.add_tag(question, tag) end)
+        Enum.each(tags, fn tag -> Questions.add_tag(question, tag) end)
+        Exq.enqueue(Exq, "notification", Kekoverflow.SendNotificationWorker, [question_params])
         conn
         |> put_flash(:info, "Successfully created")
         |> redirect(to: Routes.question_path(conn, :index))

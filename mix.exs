@@ -20,7 +20,7 @@ defmodule Kekoverflow.MixProject do
   def application do
     [
       mod: {Kekoverflow.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :exq]
     ]
   end
 
@@ -46,7 +46,9 @@ defmodule Kekoverflow.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:pow, "~> 1.0.20"},
-      {:pow_assent, "~> 0.4.8"}
+      {:pow_assent, "~> 0.4.8"},
+      {:exq, "~> 0.13.5"},
+      {:exq_ui, "~> 0.11.0"}
     ]
   end
 
