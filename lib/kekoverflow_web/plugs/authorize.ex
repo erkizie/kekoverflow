@@ -42,25 +42,34 @@ defmodule KekoverflowWeb.Authorize do
   end
 
   defp check(action, user, content, role, resource) when action in [:edit, :update] do
-    if user.id == content.user_id do
-      can(role) |> update?(resource)
+    if content == nil do
+      true
     else
-      if role == "admin" do
-        true
+      if user.id == content.user_id do
+        can(role) |> update?(resource)
       else
-        false
+        if role == "admin" do
+          true
+        else
+          false
+        end
       end
     end
+
   end
 
   defp check(action, user, content, role, resource) do
-    if user.id == content.user_id do
-      can(role) |> delete?(resource)
+    if content == nil do
+      true
     else
-      if role == "admin" do
-        true
+      if user.id == content.user_id do
+        can(role) |> delete?(resource)
       else
-        false
+        if role == "admin" do
+          true
+        else
+          false
+        end
       end
     end
   end
