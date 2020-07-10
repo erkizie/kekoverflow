@@ -7,6 +7,14 @@ let channel = socket.channel("ws_listener:lobby", {})
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+channel.on("rate", msg => {
+    var rate = Object.values(msg)
+    showRate(rate[0])
+})
+
+function showRate(rate) {
+    document.getElementById("bc-rate").innerHTML = "Current BTC rate is: " + rate
+}
 
 document.getElementById("ws-button").addEventListener("click",
     function() {

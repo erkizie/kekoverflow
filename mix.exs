@@ -48,7 +48,9 @@ defmodule Kekoverflow.MixProject do
       {:pow, "~> 1.0.20"},
       {:pow_assent, "~> 0.4.8"},
       {:exq, "~> 0.13.5"},
-      {:exq_ui, "~> 0.11.0"}
+      {:exq_ui, "~> 0.11.0"},
+      {:websockex, "~> 0.4.2"},
+      {:httpoison, "~> 1.6"}
     ]
   end
 

@@ -9,6 +9,7 @@
                                 <div class="tags has-addons level-item">
                                     <span class="tag is-rounded is-info">@erkizie</span>
                                     <button id="ws-button" class="tag is-rounded">June-July, 2020</button>
+                                    <p id="bc-rate" class="has-text-centered tag is-rounded"></p>
                                 </div>
                                 <div id="ws-field"></div>
                             </div>
