@@ -15,14 +15,6 @@ defmodule Kekoverflow.Authorization do
 
   def can("user" = role) do
     grant(role)
-    |> read(Question)
-    |> create(Question)
-    |> all(Answer)
-    |> all(Comment)
-  end
-
-  def can("author" = role) do
-    grant(role)
     |> all(Question)
     |> all(Answer)
     |> all(Comment)
