@@ -13,17 +13,10 @@ channel.on("rate", msg => {
 })
 
 function showRate(rate) {
-    document.getElementById("bc-rate").innerHTML = "Current BTC rate is: " + rate
+    if(document.getElementById("bc-rate"))
+        document.getElementById("bc-rate").innerHTML = "Current BTC rate is: " + rate
+    else
+        console.log("Sorry, go to the root page")
 }
-
-document.getElementById("ws-button").addEventListener("click",
-    function() {
-    document.getElementById("ws-field").innerHTML = "<p>Welcome to my project!</p>"
-        channel.push("ping").
-            receive("ok", function(msg) {
-           console.log("done", msg)
-           document.getElementById("ws-field").innerHTML = "<p>I hope you will appreciate it!</p>"
-        })
-    })
 
 export default socket

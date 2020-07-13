@@ -8,10 +8,9 @@
                                 <p class="title">Kek Overflow</p>
                                 <div class="tags has-addons level-item">
                                     <span class="tag is-rounded is-info">@erkizie</span>
-                                    <button id="ws-button" class="tag is-rounded">June-July, 2020</button>
+                                    <span id="ws-button" class="tag is-rounded">June-July, 2020.</span>
                                     <p id="bc-rate" class="has-text-centered tag is-rounded"></p>
                                 </div>
-                                <div id="ws-field"></div>
                             </div>
                         </div>
                         <div class="content article-body">
