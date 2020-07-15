@@ -7,6 +7,8 @@ defmodule KekoverflowWeb.AnswerController do
 
   plug KekoverflowWeb.Authorize, resource: Kekoverflow.Answers.Answer
 
+  require IEx
+
   def create(conn, %{"answer" => answer_params, "question_id" => question_id}) do
     user = conn.assigns.current_user
     question = Repo.get!(Question, question_id) |> Repo.preload([:user, :answers])
@@ -44,9 +46,14 @@ defmodule KekoverflowWeb.AnswerController do
 
   def delete(conn, %{"id" => id}) do
     answer = Answers.get_answer!(id)
+
     {:ok, _answer} = Answers.delete_answer(answer)
 
     question = Repo.get(Question, answer.question_id)
+
+    if id == question.best_answer_id do
+        Questions.update_question(question, %{"best_answer_id" => nil})
+    end
 
     conn
     |> put_flash(:info, "Answer deleted successfully.")

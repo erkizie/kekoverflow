@@ -6,6 +6,8 @@ defmodule KekoverflowWeb.QuestionController do
 
   plug KekoverflowWeb.Authorize, resource: Kekoverflow.Questions.Question
 
+  require IEx
+
   def index(conn, _params) do
     questions = Questions.list_questions()
     render(conn, "index.html", questions: questions)
@@ -46,6 +48,14 @@ defmodule KekoverflowWeb.QuestionController do
                 answer |> Repo.preload(:comments)
               end
 
+    best_answer =
+      if question.best_answer_id do
+        Answers.get_answer!(question.best_answer_id)
+                  |> Repo.preload(:comments)
+        else
+          nil
+        end
+
     answer_changeset = question
                         |> Ecto.build_assoc(:answers)
                         |> Answer.changeset()
@@ -55,7 +65,7 @@ defmodule KekoverflowWeb.QuestionController do
                         |> Ecto.build_assoc(:comments)
                         |> Comment.changeset()
 
-    render(conn, "show.html", question: question, answers: answers, answer_changeset: answer_changeset, comment_changeset: comment_changeset)
+    render(conn, "show.html", question: question, answers: answers, answer_changeset: answer_changeset, comment_changeset: comment_changeset, best_answer: best_answer)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -75,6 +85,40 @@ defmodule KekoverflowWeb.QuestionController do
 
       {:error, changeset} ->
         render(conn, "edit.html", question: question, changeset: changeset)
+    end
+  end
+
+  def update(conn, %{"id" => id, "answer" => answer_id, "best_answer" => check}) do
+    question = Questions.get_question!(id)
+    question_params = %{"best_answer_id" => nil}
+
+    if conn.assigns.current_user.id == question.user_id do
+      case Questions.update_question(question, question_params) do
+        {:ok, question} ->
+          conn
+          |> put_flash(:info, "Best answer was removed")
+          |> redirect(to: Routes.question_path(conn, :show, question))
+
+        {:error, changeset} ->
+          render(conn, "edit.html", question: question, changeset: changeset)
+      end
+    end
+  end
+
+  def update(conn, %{"id" => id, "answer" => answer_id}) do
+    question = Questions.get_question!(id)
+    question_params = %{"best_answer_id" => answer_id}
+    
+    if conn.assigns.current_user.id == question.user_id do
+      case Questions.update_question(question, question_params) do
+        {:ok, question} ->
+          conn
+          |> put_flash(:info, "You chose the best answer")
+          |> redirect(to: Routes.question_path(conn, :show, question))
+
+        {:error, changeset} ->
+          render(conn, "edit.html", question: question, changeset: changeset)
+      end
     end
   end
 

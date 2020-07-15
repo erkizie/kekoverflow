@@ -6,6 +6,7 @@ defmodule Kekoverflow.Questions.Question do
     field :body, :string
     field :rate, :integer
     field :title, :string
+    field :best_answer_id, :string
 
     belongs_to :user, Kekoverflow.Users.User
     has_many :answers, Kekoverflow.Answers.Answer, on_delete: :delete_all
@@ -18,7 +19,7 @@ defmodule Kekoverflow.Questions.Question do
   @doc false
   def changeset(question, attrs \\ %{}) do
     question
-    |> cast(attrs, [:title, :body, :rate, :user_id])
+    |> cast(attrs, [:title, :body, :rate, :user_id, :best_answer_id])
     |> validate_required([:title, :body])
   end
 end
