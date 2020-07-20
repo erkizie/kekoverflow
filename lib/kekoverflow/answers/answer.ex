@@ -6,7 +6,6 @@ defmodule Kekoverflow.Answers.Answer do
 
   schema "answers" do
     field :body, :string
-    field :rate, :integer
 
     belongs_to :user, Kekoverflow.Users.User
     belongs_to :question, Kekoverflow.Questions.Question
@@ -18,7 +17,7 @@ defmodule Kekoverflow.Answers.Answer do
   @doc false
   def changeset(answer, attrs \\ %{}) do
     answer
-    |> cast(attrs, [:body, :rate, :user_id])
+    |> cast(attrs, [:body, :user_id])
     |> validate_required([:body])
   end
 end

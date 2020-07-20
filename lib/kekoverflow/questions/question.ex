@@ -1,10 +1,10 @@
 defmodule Kekoverflow.Questions.Question do
   use Ecto.Schema
   import Ecto.Changeset
+  require IEx
 
   schema "questions" do
     field :body, :string
-    field :rate, :integer
     field :title, :string
     field :best_answer_id, :string
 
@@ -18,8 +18,9 @@ defmodule Kekoverflow.Questions.Question do
 
   @doc false
   def changeset(question, attrs \\ %{}) do
+    IEx.pry
     question
-    |> cast(attrs, [:title, :body, :rate, :user_id, :best_answer_id])
+    |> cast(attrs, [:title, :body, :user_id, :best_answer_id])
     |> validate_required([:title, :body])
   end
 end
