@@ -5,8 +5,6 @@ defmodule KekoverflowWeb.AnswerController do
 
   alias Kekoverflow.{Repo, Answers.Answer, Answers, Questions, Questions.Question}
 
-  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Answers.Answer
-
   require IEx
 
   def create(conn, %{"answer" => answer_params, "question_id" => question_id}) do

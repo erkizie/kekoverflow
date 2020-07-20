@@ -4,8 +4,6 @@ defmodule KekoverflowWeb.CommentController do
 
   alias Kekoverflow.{Repo, Questions.Question, Answers.Answer, Comments.Comment, Comments}
 
-  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Comments.Comment
-
   def create(conn, %{"comment" => comment_params, "question_id" => question_id, "answer_id" => answer_id}) do
 
     answer = Repo.get!(Answer, answer_id) |> Repo.preload([:user, :comments])
