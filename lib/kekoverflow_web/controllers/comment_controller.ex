@@ -1,6 +1,5 @@
 defmodule KekoverflowWeb.CommentController do
   use KekoverflowWeb, :controller
-  import Kekoverflow.Authorization
 
   alias Kekoverflow.{Repo, Questions.Question, Answers.Answer, Comments.Comment, Comments}
 

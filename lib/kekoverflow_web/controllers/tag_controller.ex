@@ -1,6 +1,5 @@
 defmodule KekoverflowWeb.TagController do
   use KekoverflowWeb, :controller
-  import Kekoverflow.Authorization
 
   alias Kekoverflow.Questions
   alias Kekoverflow.Questions.Tag

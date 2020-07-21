@@ -1,7 +1,6 @@
 defmodule KekoverflowWeb.AnswerController do
   use KekoverflowWeb, :controller
   import Ecto
-  import Kekoverflow.Authorization
 
   alias Kekoverflow.{Repo, Answers.Answer, Answers, Questions, Questions.Question}
 
