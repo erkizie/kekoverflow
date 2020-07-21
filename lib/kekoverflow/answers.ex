@@ -101,4 +101,14 @@ defmodule Kekoverflow.Answers do
   def change_answer(%Answer{} = answer, attrs \\ %{}) do
     Answer.changeset(answer, attrs)
   end
+
+  @behaviour Bodyguard.Policy
+  alias Kekoverflow.Users.User
+
+  def authorize(_, %User{role: "admin"}, _), do: true
+
+  def authorize(action, %User{id: user_id}, %Answer{user_id: user_id})
+      when action in [:update_answer, :delete_answer], do: true
+
+  def authorize(_, _, _), do: false
 end

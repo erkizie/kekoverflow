@@ -23,9 +23,7 @@ defmodule KekoverflowWeb.QuestionController do
     changeset = user
       |> Ecto.build_assoc(:questions)
       |> Question.changeset(question_params)
-
-#    changeset = Question.changeset(%Question{user_id: user.id}, question_params)
-
+    
     case Repo.insert(changeset) do
       {:ok, question} ->
         Enum.each(tags, fn tag -> Questions.add_tag(question, tag) end)
