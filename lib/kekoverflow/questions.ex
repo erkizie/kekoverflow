@@ -224,14 +224,14 @@ defmodule Kekoverflow.Questions do
   end
 
   @behaviour Bodyguard.Policy
-  alias Kekoverflow.{Questions.Question, Users.User}
+  alias Kekoverflow.Users.User
 
   def authorize(_, %User{role: "admin"}, _), do: true
-
-  def authorize(:create_question, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Question{user_id: user_id})
       when action in [:update_question, :delete_question], do: true
 
   def authorize(_, _, _), do: false
+
+  def authorize(:delete_tag, %User{role: "admin"}, _), do: true
 end
