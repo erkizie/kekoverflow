@@ -101,4 +101,14 @@ defmodule Kekoverflow.Comments do
   def change_comment(%Comment{} = comment, attrs \\ %{}) do
     Comment.changeset(comment, attrs)
   end
+
+  @behaviour Bodyguard.Policy
+  alias Kekoverflow.Users.User
+
+  def authorize(_, %User{role: "admin"}, _), do: true
+
+  def authorize(action, %User{id: user_id}, %Comment{user_id: user_id})
+      when action in [:delete_comment], do: true
+
+  def authorize(_, _, _), do: false
 end
