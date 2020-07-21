@@ -50,7 +50,8 @@ defmodule Kekoverflow.MixProject do
       {:exq, "~> 0.13.5"},
       {:exq_ui, "~> 0.11.0"},
       {:websockex, "~> 0.4.2"},
-      {:httpoison, "~> 1.6"}
+      {:httpoison, "~> 1.6"},
+      {:bodyguard, "~> 2.4"}
     ]
   end
 

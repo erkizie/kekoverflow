@@ -61,7 +61,7 @@ defmodule KekoverflowWeb.Router do
 
     resources "/questions", QuestionController do
       resources "/comments", CommentController, only: [:create, :delete, :update]
-      resources "/answers", AnswerController, only: [:create, :delete, :update] do
+      resources "/answers", AnswerController, only: [:edit, :create, :delete, :update] do
         resources "/comments", CommentController, only: [:create, :delete, :update]
       end
     end

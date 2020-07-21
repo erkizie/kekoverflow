@@ -4,7 +4,7 @@ defmodule KekoverflowWeb.CommentController do
 
   alias Kekoverflow.{Repo, Questions.Question, Answers.Answer, Comments.Comment, Comments}
 
-  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Comments.Comment
+  action_fallback KekoverflowWeb.FallbackController
 
   def create(conn, %{"comment" => comment_params, "question_id" => question_id, "answer_id" => answer_id}) do
 
@@ -61,12 +61,15 @@ defmodule KekoverflowWeb.CommentController do
 
   def delete(conn, %{"id" => id}) do
     comment = Comments.get_comment!(id)
-    {:ok, _comment} = Comments.delete_comment(comment)
-
     question = Repo.get(Question, comment.question_id)
+    user = conn.assigns.current_user
 
-    conn
-    |> put_flash(:info, "Comment deleted successfully.")
-    |> redirect(to: Routes.question_path(conn, :show, question))
+    with :ok <- Bodyguard.permit(Comments, :delete_comment, user, comment),
+         {:ok, _comment} <- Comments.delete_comment(comment)
+      do
+      conn
+      |> put_flash(:info, "Comment deleted successfully.")
+      |> redirect(to: Routes.question_path(conn, :show, question))
+    end
   end
 end

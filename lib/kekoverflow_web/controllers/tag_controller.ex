@@ -5,7 +5,7 @@ defmodule KekoverflowWeb.TagController do
   alias Kekoverflow.Questions
   alias Kekoverflow.Questions.Tag
 
-  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Questions.Tag
+  action_fallback KekoverflowWeb.FallbackController
 
   def index(conn, _params) do
     tags = Questions.list_tags()
@@ -36,10 +36,14 @@ defmodule KekoverflowWeb.TagController do
 
   def delete(conn, %{"id" => id}) do
     tag = Questions.get_tag!(id)
-    {:ok, _tag} = Questions.delete_tag(tag)
+    user = conn.assigns.current_user
 
-    conn
-    |> put_flash(:info, "Tag deleted successfully.")
-    |> redirect(to: Routes.tag_path(conn, :index))
+    with :ok <- Bodyguard.permit(Questions, :delete_tag, user, tag),
+         {:ok, _tag} <- Questions.delete_tag(tag)
+      do
+      conn
+      |> put_flash(:info, "Tag deleted successfully.")
+      |> redirect(to: Routes.tag_path(conn, :index))
+    end
   end
 end

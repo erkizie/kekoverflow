@@ -65,6 +65,7 @@
                     </div>
                     <span>
                         <%= link "[x]", to: Routes.question_path(@conn, :update, @question, %{"answer" => @best_answer, "best_answer" => false}), method: :put %> |
+                        <%= link "Edit", to: Routes.question_answer_path(@conn, :edit, @question, @best_answer) %> |
                         <%= link "Delete", to: Routes.question_answer_path(@conn, :delete, @question, @best_answer), method: :delete, data: [confirm: "Are you sure?"] %>
                     </span>
                     <p style="color:black">
@@ -102,6 +103,7 @@
                         </div>
                         <span>
                             <%= link "[✓]", to: Routes.question_path(@conn, :update, @question, %{"answer" => answer}), method: :put %> |
+                            <%= link "Edit", to: Routes.question_answer_path(@conn, :edit, @question, answer) %> |
                             <%= link "Delete", to: Routes.question_answer_path(@conn, :delete, @question, answer), method: :delete, data: [confirm: "Are you sure?"] %>
                         </span>
                         <p style="color:black">
@@ -124,6 +126,7 @@
                         </div>
                         <span>
                             <%= link "[✓]", to: Routes.question_path(@conn, :update, @question, %{"answer" => answer}), method: :put %> |
+                            <%= link "Edit", to: Routes.question_answer_path(@conn, :edit, @question, answer) %> |
                             <%= link "Delete", to: Routes.question_answer_path(@conn, :delete, @question, answer), method: :delete, data: [confirm: "Are you sure?"] %>
                         </span>
                         <p style="color:black">

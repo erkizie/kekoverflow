@@ -1,12 +1,9 @@
 defmodule KekoverflowWeb.QuestionController do
   use KekoverflowWeb, :controller
   use Ecto.Schema
-  import Kekoverflow.Authorization
   alias Kekoverflow.{Repo, Questions.Question, Questions, Answers.Answer, Answers, Comments.Comment, Comments}
 
-  plug KekoverflowWeb.Authorize, resource: Kekoverflow.Questions.Question
-
-  require IEx
+  action_fallback KekoverflowWeb.FallbackController
 
   def index(conn, _params) do
     questions = Questions.list_questions()
@@ -26,9 +23,7 @@ defmodule KekoverflowWeb.QuestionController do
     changeset = user
       |> Ecto.build_assoc(:questions)
       |> Question.changeset(question_params)
-
-#    changeset = Question.changeset(%Question{user_id: user.id}, question_params)
-
+    
     case Repo.insert(changeset) do
       {:ok, question} ->
         Enum.each(tags, fn tag -> Questions.add_tag(question, tag) end)
@@ -76,58 +71,59 @@ defmodule KekoverflowWeb.QuestionController do
 
   def update(conn, %{"id" => id, "question" => question_params}) do
     question = Questions.get_question!(id)
+    user = conn.assigns.current_user
 
-    case Questions.update_question(question, question_params) do
-      {:ok, question} ->
-        conn
-        |> put_flash(:info, "Question updated successfully.")
-        |> redirect(to: Routes.question_path(conn, :show, question))
+    with :ok <- Bodyguard.permit(Questions, :update_question, user, question) do
+      case Questions.update_question(question, question_params) do
+        {:ok, question} ->
+          conn
+          |> put_flash(:info, "Question updated successfully.")
+          |> redirect(to: Routes.question_path(conn, :show, question))
 
-      {:error, changeset} ->
-        render(conn, "edit.html", question: question, changeset: changeset)
+        {:error, changeset} ->
+          render(conn, "edit.html", question: question, changeset: changeset)
+      end
     end
   end
 
   def update(conn, %{"id" => id, "answer" => answer_id, "best_answer" => check}) do
+    user = conn.assigns.current_user
     question = Questions.get_question!(id)
     question_params = %{"best_answer_id" => nil}
 
-    if conn.assigns.current_user.id == question.user_id do
-      case Questions.update_question(question, question_params) do
-        {:ok, question} ->
-          conn
-          |> put_flash(:info, "Best answer was removed")
-          |> redirect(to: Routes.question_path(conn, :show, question))
-
-        {:error, changeset} ->
-          render(conn, "edit.html", question: question, changeset: changeset)
-      end
+    with :ok <- Bodyguard.permit(Questions, :update_question, user, question),
+      {:ok, question} <- Questions.update_question(question, question_params)
+    do
+      conn
+      |> put_flash(:info, "Best answer has been removed")
+      |> redirect(to: Routes.question_path(conn, :show, question))
     end
   end
 
   def update(conn, %{"id" => id, "answer" => answer_id}) do
+    user = conn.assigns.current_user
     question = Questions.get_question!(id)
     question_params = %{"best_answer_id" => answer_id}
-    
-    if conn.assigns.current_user.id == question.user_id do
-      case Questions.update_question(question, question_params) do
-        {:ok, question} ->
-          conn
-          |> put_flash(:info, "You chose the best answer")
-          |> redirect(to: Routes.question_path(conn, :show, question))
 
-        {:error, changeset} ->
-          render(conn, "edit.html", question: question, changeset: changeset)
-      end
+    with :ok <- Bodyguard.permit(Questions, :update_question, user, question),
+      {:ok, question} <- Questions.update_question(question, question_params)
+    do
+      conn
+      |> put_flash(:info, "You chose the best answer")
+      |> redirect(to: Routes.question_path(conn, :show, question))
     end
   end
 
   def delete(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
     question = Questions.get_question!(id)
-    {:ok, _question} = Questions.delete_question(question)
 
-    conn
-    |> put_flash(:info, "Question deleted successfully.")
-    |> redirect(to: Routes.question_path(conn, :index))
+    with :ok <- Bodyguard.permit(Questions, :delete_question, user, question),
+      {:ok, _question} <- Questions.delete_question(question)
+    do
+      conn
+      |> put_flash(:info, "Question deleted successfully.")
+      |> redirect(to: Routes.question_path(conn, :index))
+    end
   end
 end
