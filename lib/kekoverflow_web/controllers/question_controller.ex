@@ -69,6 +69,30 @@ defmodule KekoverflowWeb.QuestionController do
     render(conn, "edit.html", question: question, changeset: changeset)
   end
 
+  def update(conn, %{"id" => id, "rate_update" => "up"}) do
+    question = Questions.get_question!(id)
+    rate_params = %{"rate" => question.rate + 1}
+
+    case Questions.update_question(question, rate_params) do
+      {:ok, question} ->
+        conn
+        |> put_flash(:info, "You have upgraded this question`s rating.")
+        |> redirect(to: Routes.question_path(conn, :show, question))
+    end
+  end
+
+  def update(conn, %{"id" => id, "rate_update" => "down"}) do
+    question = Questions.get_question!(id)
+    rate_params = %{"rate" => question.rate - 1}
+
+    case Questions.update_question(question, rate_params) do
+      {:ok, question} ->
+        conn
+        |> put_flash(:info, "You have downgraded this question`s rating.")
+        |> redirect(to: Routes.question_path(conn, :show, question))
+    end
+  end
+
   def update(conn, %{"id" => id, "question" => question_params}) do
     question = Questions.get_question!(id)
     user = conn.assigns.current_user

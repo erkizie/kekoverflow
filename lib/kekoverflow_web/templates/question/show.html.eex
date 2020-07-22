@@ -7,6 +7,12 @@
                     <%= @question.body %>
                 </div>
                 <div>
+                    <p>Rate:</p>
+                    <%= @question.rate %>
+                    <%= link "⬆", to: Routes.question_path(@conn, :update, @question, %{"rate_update" => "up"}), method: :put %>
+                    <%= link "⬇", to: Routes.question_path(@conn, :update, @question, %{"rate_update" => "down"}), method: :put %>
+                </div>
+                <div>
                 <p>Tags:</p>
                     <%= for tag <- @question.tags do %> |
                         <%= link to: Routes.tag_path(@conn, :tagged, tag) do %>
@@ -61,6 +67,10 @@
                   </div>
                 </div>
                     <div class="content comment-body">
+                        rate:
+                        <%= @best_answer.rate %>
+                        <%= link "⬆", to: Routes.question_answer_path(@conn, :update, @question, @best_answer, %{"rate_update" => "up"}), method: :put %>
+                        <%= link "⬇", to: Routes.question_answer_path(@conn, :update, @question, @best_answer, %{"rate_update" => "down"}), method: :put %>
                         <%= render KekoverflowWeb.AnswerView, "answer.html", answer: @best_answer %>
                     </div>
                     <span>
@@ -99,6 +109,10 @@
                 <%= if @best_answer do %>
                     <%= if answer.id !== @best_answer.id do %>
                         <div class="content comment-body">
+                            rate:
+                            <%= answer.rate %>
+                            <%= link "⬆", to: Routes.question_answer_path(@conn, :update, @question, answer, %{"rate_update" => "up"}), method: :put %>
+                            <%= link "⬇", to: Routes.question_answer_path(@conn, :update, @question, answer, %{"rate_update" => "down"}), method: :put %>
                             <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
                         </div>
                         <span>
@@ -122,6 +136,10 @@
                     <% end %>
                 <% else %>
                         <div class="content comment-body">
+                            rate:
+                            <%= answer.rate %>
+                             <%= link "⬆", to: Routes.question_answer_path(@conn, :update, @question, answer, %{"rate_update" => "up"}), method: :put %>
+                             <%= link "⬇", to: Routes.question_answer_path(@conn, :update, @question, answer, %{"rate_update" => "down"}), method: :put %>
                             <%= render KekoverflowWeb.AnswerView, "answer.html", answer: answer %>
                         </div>
                         <span>

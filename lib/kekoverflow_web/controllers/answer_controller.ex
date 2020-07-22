@@ -30,6 +30,30 @@ defmodule KekoverflowWeb.AnswerController do
     render(conn, "edit.html", answer: answer, question: question, changeset: changeset)
   end
 
+  def update(conn, %{"id" => id, "question_id" => question_id, "rate_update" => "up"}) do
+    answer = Answers.get_answer!(id)
+    rate_params = %{"rate" => answer.rate + 1}
+
+    case Answers.update_answer(answer, rate_params) do
+      {:ok, answer} ->
+        conn
+        |> put_flash(:info, "You have upgraded this answer`s rating.")
+        |> redirect(to: Routes.question_path(conn, :show, question_id))
+    end
+  end
+
+  def update(conn, %{"id" => id, "question_id" => question_id, "rate_update" => "down"}) do
+    answer = Answers.get_answer!(id)
+    rate_params = %{"rate" => answer.rate - 1}
+
+    case Answers.update_answer(answer, rate_params) do
+      {:ok, answer} ->
+        conn
+        |> put_flash(:info, "You have downgraded this answer`s rating.")
+        |> redirect(to: Routes.question_path(conn, :show, question_id))
+    end
+  end
+
   def update(conn, %{"id" => id, "answer" => answer_params, "question_id" => question_id}) do
     answer = Answers.get_answer!(id)
     question = Questions.get_question!(question_id)

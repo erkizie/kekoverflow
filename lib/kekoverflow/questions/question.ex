@@ -4,7 +4,7 @@ defmodule Kekoverflow.Questions.Question do
 
   schema "questions" do
     field :body, :string
-    field :rate, :integer
+    field :rate, :integer, default: 0
     field :title, :string
     field :best_answer_id, :string
 

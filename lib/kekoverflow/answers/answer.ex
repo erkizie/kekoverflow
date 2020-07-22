@@ -6,7 +6,7 @@ defmodule Kekoverflow.Answers.Answer do
 
   schema "answers" do
     field :body, :string
-    field :rate, :integer
+    field :rate, :integer, default: 0
 
     belongs_to :user, Kekoverflow.Users.User
     belongs_to :question, Kekoverflow.Questions.Question
