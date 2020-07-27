@@ -10,6 +10,7 @@ defmodule Kekoverflow.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
+      preferred_cli_env: [espec: :test],
       deps: deps()
     ]
   end
@@ -20,7 +21,7 @@ defmodule Kekoverflow.MixProject do
   def application do
     [
       mod: {Kekoverflow.Application, []},
-      extra_applications: [:logger, :runtime_tools, :exq]
+      extra_applications: [:logger, :runtime_tools, :exq, :ex_machina]
     ]
   end
 
@@ -51,7 +52,10 @@ defmodule Kekoverflow.MixProject do
       {:exq_ui, "~> 0.11.0"},
       {:websockex, "~> 0.4.2"},
       {:httpoison, "~> 1.6"},
-      {:bodyguard, "~> 2.4"}
+      {:bodyguard, "~> 2.4"},
+      {:ex_machina, "~> 2.4", only: :test},
+      {:faker, "~> 0.14", only: :test},
+      {:espec, "~> 1.8.2", only: :test}
     ]
   end
 
