@@ -21,7 +21,7 @@ defmodule Kekoverflow.MixProject do
   def application do
     [
       mod: {Kekoverflow.Application, []},
-      extra_applications: [:logger, :runtime_tools, :exq, :ex_machina]
+      extra_applications: [:logger, :runtime_tools, :exq]
     ]
   end
 
