@@ -19,6 +19,7 @@ defmodule Kekoverflow.Comments do
   """
   def list_comments do
     Repo.all(Comment)
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -36,6 +37,7 @@ defmodule Kekoverflow.Comments do
 
   """
   def get_comment!(id), do: Repo.get!(Comment, id)
+                            |> Repo.preload(:user)
 
   @doc """
   Creates a comment.

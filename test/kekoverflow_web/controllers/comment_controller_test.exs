@@ -1,88 +1,62 @@
 defmodule KekoverflowWeb.CommentControllerTest do
   use KekoverflowWeb.ConnCase
-
+  import Kekoverflow.Factory
   alias Kekoverflow.Comments
 
   @create_attrs %{body: "some body"}
   @update_attrs %{body: "some updated body"}
   @invalid_attrs %{body: nil}
 
-  def fixture(:comment) do
-    {:ok, comment} = Comments.create_comment(@create_attrs)
-    comment
+  setup %{conn: conn} do
+    user = insert(:user)
+    question = insert(:question)
+    answer = insert(:answer)
+
+    comment_for_question = insert(:comment_for_question, question: question, user: user)
+    comment_for_answer = insert(:comment_for_answer, question: question, answer: answer, user: user)
+    {:ok, conn: assign(conn, :current_user, user), comment_for_question: comment_for_question, comment_for_answer: comment_for_answer, question: question, answer: answer}
   end
 
-  describe "index" do
-    test "lists all comments", %{conn: conn} do
-      conn = get(conn, Routes.comment_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Comments"
-    end
-  end
-
-  describe "new comment" do
-    test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.comment_path(conn, :new))
-      assert html_response(conn, 200) =~ "New Comment"
-    end
-  end
-
-  describe "create comment" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.comment_path(conn, :create), comment: @create_attrs)
+  describe "create comment for question" do
+    test "redirects to show when data is valid", %{conn: conn, question: question} do
+      conn = post(conn, Routes.question_comment_path(conn, :create, question), comment: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.comment_path(conn, :show, id)
-
-      conn = get(conn, Routes.comment_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show Comment"
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.comment_path(conn, :create), comment: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Comment"
+    test "renders errors when data is invalid", %{conn: conn, question: question} do
+      conn = post(conn, Routes.question_comment_path(conn, :create, question), comment: @invalid_attrs)
+      assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
     end
   end
 
-  describe "edit comment" do
-    setup [:create_comment]
+  describe "create comment for answer" do
+    test "redirects to show when data is valid", %{conn: conn, question: question, answer: answer} do
+      conn = post(conn, Routes.question_answer_comment_path(conn, :create, question, answer), comment: @create_attrs)
 
-    test "renders form for editing chosen comment", %{conn: conn, comment: comment} do
-      conn = get(conn, Routes.comment_path(conn, :edit, comment))
-      assert html_response(conn, 200) =~ "Edit Comment"
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
+    end
+
+    test "renders errors when data is invalid", %{conn: conn, question: question, answer: answer} do
+      conn = post(conn, Routes.question_answer_comment_path(conn, :create, question, answer), comment: @invalid_attrs)
+      assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
     end
   end
 
-  describe "update comment" do
-    setup [:create_comment]
-
-    test "redirects when data is valid", %{conn: conn, comment: comment} do
-      conn = put(conn, Routes.comment_path(conn, :update, comment), comment: @update_attrs)
-      assert redirected_to(conn) == Routes.comment_path(conn, :show, comment)
-
-      conn = get(conn, Routes.comment_path(conn, :show, comment))
-      assert html_response(conn, 200) =~ "some updated body"
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, comment: comment} do
-      conn = put(conn, Routes.comment_path(conn, :update, comment), comment: @invalid_attrs)
-      assert html_response(conn, 200) =~ "Edit Comment"
+  describe "delete comment for question" do
+    test "deletes chosen comment", %{conn: conn, comment_for_question: comment, question: question} do
+      conn = delete(conn, Routes.question_comment_path(conn, :delete, question, comment))
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
     end
   end
 
-  describe "delete comment" do
-    setup [:create_comment]
-
-    test "deletes chosen comment", %{conn: conn, comment: comment} do
-      conn = delete(conn, Routes.comment_path(conn, :delete, comment))
-      assert redirected_to(conn) == Routes.comment_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get(conn, Routes.comment_path(conn, :show, comment))
-      end
+  describe "delete comment for answer" do
+    test "deletes chosen comment", %{conn: conn, comment_for_answer: comment, question: question, answer: answer} do
+      conn = delete(conn, Routes.question_answer_comment_path(conn, :delete, question, answer, comment))
+      IO.inspect(conn)
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
     end
-  end
-
-  defp create_comment(_) do
-    comment = fixture(:comment)
-    %{comment: comment}
   end
 end
