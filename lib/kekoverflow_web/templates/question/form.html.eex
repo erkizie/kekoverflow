@@ -23,6 +23,7 @@
       <div class="control">
           <p>Tags:</p>
             <%= textarea f, :add_tags, class: "textarea is-small", placeholder: "Tags" %>
+            <%= error_tag f, :tags %>
       </div>
     </div>
 

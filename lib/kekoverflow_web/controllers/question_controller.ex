@@ -18,7 +18,9 @@ defmodule KekoverflowWeb.QuestionController do
   def create(conn, %{"question" => question_params}) do
     user = conn.assigns.current_user
 
-    tags = String.split(question_params["add_tags"], ", ")
+    tags = if question_params["add_tags"] do
+      String.split(question_params["add_tags"], ", ")
+    end
 
     changeset = user
       |> Ecto.build_assoc(:questions)
@@ -30,7 +32,7 @@ defmodule KekoverflowWeb.QuestionController do
         Exq.enqueue(Exq, "notification", Kekoverflow.SendNotificationWorker, [question_params])
         conn
         |> put_flash(:info, "Successfully created")
-        |> redirect(to: Routes.question_path(conn, :index))
+        |> redirect(to: Routes.question_path(conn, :show, question))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
