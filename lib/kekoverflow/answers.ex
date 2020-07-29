@@ -9,19 +9,6 @@ defmodule Kekoverflow.Answers do
   alias Kekoverflow.Answers.Answer
 
   @doc """
-  Returns the list of answers.
-
-  ## Examples
-
-      iex> list_answers()
-      [%Answer{}, ...]
-
-  """
-  def list_answers do
-    Repo.all(Answer)
-  end
-
-  @doc """
   Gets a single answer.
 
   Raises `Ecto.NoResultsError` if the Answer does not exist.
@@ -36,6 +23,8 @@ defmodule Kekoverflow.Answers do
 
   """
   def get_answer!(id), do: Repo.get!(Answer, id)
+                           |> Repo.preload(question: [:user])
+                           |> Repo.preload(:user)
 
   @doc """
   Creates a answer.

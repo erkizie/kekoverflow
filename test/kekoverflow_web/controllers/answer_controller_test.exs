@@ -1,88 +1,75 @@
 defmodule KekoverflowWeb.AnswerControllerTest do
   use KekoverflowWeb.ConnCase
-
+  import Kekoverflow.Factory
   alias Kekoverflow.Answers
 
-  @create_attrs %{body: "some body", rate: 42, title: "some title"}
-  @update_attrs %{body: "some updated body", rate: 43, title: "some updated title"}
-  @invalid_attrs %{body: nil, rate: nil, title: nil}
+  @create_attrs %{body: "some body", rate: 42}
+  @update_attrs %{body: "some updated body", rate: 43}
+  @invalid_attrs %{body: nil, rate: nil}
 
-  def fixture(:answer) do
-    {:ok, answer} = Answers.create_answer(@create_attrs)
-    answer
-  end
-
-  describe "index" do
-    test "lists all answers", %{conn: conn} do
-      conn = get(conn, Routes.answer_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Answers"
-    end
-  end
-
-  describe "new answer" do
-    test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.answer_path(conn, :new))
-      assert html_response(conn, 200) =~ "New Answer"
-    end
+  setup %{conn: conn} do
+    user = insert(:user)
+    question = insert(:question)
+    answer = insert(:answer_with_assoc, question: question, user: user)
+    {:ok, conn: assign(conn, :current_user, user), answer: answer, question: question}
   end
 
   describe "create answer" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.answer_path(conn, :create), answer: @create_attrs)
+    test "redirects to question page when data is valid", %{conn: conn, question: question} do
+      conn = post(conn, Routes.question_answer_path(conn, :create, question), answer: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.answer_path(conn, :show, id)
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
 
-      conn = get(conn, Routes.answer_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show Answer"
+      conn = recycle_conn(conn)
+
+      conn = get(conn, Routes.question_path(conn, :show, question))
+      assert html_response(conn, 200) =~ "Kekoverflow"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.answer_path(conn, :create), answer: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Answer"
+    test "renders errors when data is invalid", %{conn: conn, question: question} do
+      conn = post(conn, Routes.question_answer_path(conn, :create, question), answer: @invalid_attrs)
+      assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
     end
   end
 
   describe "edit answer" do
-    setup [:create_answer]
-
-    test "renders form for editing chosen answer", %{conn: conn, answer: answer} do
-      conn = get(conn, Routes.answer_path(conn, :edit, answer))
+    test "renders form for editing chosen answer", %{conn: conn, answer: answer, question: question} do
+      conn = get(conn, Routes.question_answer_path(conn, :edit, question, answer))
       assert html_response(conn, 200) =~ "Edit Answer"
     end
   end
 
   describe "update answer" do
-    setup [:create_answer]
+    test "redirects when data is valid", %{conn: conn, answer: answer, question: question} do
+      conn = put(conn, Routes.question_answer_path(conn, :update, question, answer), answer: @update_attrs)
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
 
-    test "redirects when data is valid", %{conn: conn, answer: answer} do
-      conn = put(conn, Routes.answer_path(conn, :update, answer), answer: @update_attrs)
-      assert redirected_to(conn) == Routes.answer_path(conn, :show, answer)
+      conn = recycle_conn(conn)
 
-      conn = get(conn, Routes.answer_path(conn, :show, answer))
+      conn = get(conn, Routes.question_path(conn, :show, question))
       assert html_response(conn, 200) =~ "some updated body"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, answer: answer} do
-      conn = put(conn, Routes.answer_path(conn, :update, answer), answer: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, answer: answer, question: question} do
+      conn = put(conn, Routes.question_answer_path(conn, :update, question, answer), answer: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Answer"
     end
   end
 
   describe "delete answer" do
-    setup [:create_answer]
-
-    test "deletes chosen answer", %{conn: conn, answer: answer} do
-      conn = delete(conn, Routes.answer_path(conn, :delete, answer))
-      assert redirected_to(conn) == Routes.answer_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get(conn, Routes.answer_path(conn, :show, answer))
-      end
+    test "deletes chosen answer", %{conn: conn, answer: answer, question: question} do
+      conn = delete(conn, Routes.question_answer_path(conn, :delete, question, answer))
+      assert redirected_to(conn) == Routes.question_path(conn, :show, question)
     end
   end
 
-  defp create_answer(_) do
-    answer = fixture(:answer)
-    %{answer: answer}
+  defp recycle_conn(conn) do
+    saved_assigns = conn.assigns
+    conn =
+      conn
+      |> recycle()
+      |> Map.put(:assigns, saved_assigns)
+    conn
   end
 end
