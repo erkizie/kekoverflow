@@ -1,31 +1,25 @@
 defmodule Kekoverflow.QuestionsTest do
   use Kekoverflow.DataCase
-
+  import Kekoverflow.Factory
   alias Kekoverflow.Questions
 
   describe "questions" do
     alias Kekoverflow.Questions.Question
 
+    setup do
+      question = insert(:question_with_assoc)
+      {:ok, question: question}
+    end
+
     @valid_attrs %{body: "some body", rate: 42, title: "some title"}
     @update_attrs %{body: "some updated body", rate: 43, title: "some updated title"}
     @invalid_attrs %{body: nil, rate: nil, title: nil}
 
-    def question_fixture(attrs \\ %{}) do
-      {:ok, question} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Questions.create_question()
-
-      question
-    end
-
-    test "list_questions/0 returns all questions" do
-      question = question_fixture()
+    test "list_questions/0 returns all questions", %{question: question} do
       assert Questions.list_questions() == [question]
     end
 
-    test "get_question!/1 returns the question with given id" do
-      question = question_fixture()
+    test "get_question!/1 returns the question with given id", %{question: question} do
       assert Questions.get_question!(question.id) == question
     end
 
@@ -40,28 +34,24 @@ defmodule Kekoverflow.QuestionsTest do
       assert {:error, %Ecto.Changeset{}} = Questions.create_question(@invalid_attrs)
     end
 
-    test "update_question/2 with valid data updates the question" do
-      question = question_fixture()
+    test "update_question/2 with valid data updates the question", %{question: question} do
       assert {:ok, %Question{} = question} = Questions.update_question(question, @update_attrs)
       assert question.body == "some updated body"
       assert question.rate == 43
       assert question.title == "some updated title"
     end
 
-    test "update_question/2 with invalid data returns error changeset" do
-      question = question_fixture()
+    test "update_question/2 with invalid data returns error changeset", %{question: question} do
       assert {:error, %Ecto.Changeset{}} = Questions.update_question(question, @invalid_attrs)
       assert question == Questions.get_question!(question.id)
     end
 
-    test "delete_question/1 deletes the question" do
-      question = question_fixture()
+    test "delete_question/1 deletes the question", %{question: question} do
       assert {:ok, %Question{}} = Questions.delete_question(question)
       assert_raise Ecto.NoResultsError, fn -> Questions.get_question!(question.id) end
     end
 
-    test "change_question/1 returns a question changeset" do
-      question = question_fixture()
+    test "change_question/1 returns a question changeset", %{question: question} do
       assert %Ecto.Changeset{} = Questions.change_question(question)
     end
   end
@@ -69,26 +59,20 @@ defmodule Kekoverflow.QuestionsTest do
   describe "tags" do
     alias Kekoverflow.Questions.Tag
 
+    setup do
+      tag = insert(:tag)
+      {:ok, tag: tag}
+    end
+
     @valid_attrs %{text: "some text"}
     @update_attrs %{text: "some updated text"}
     @invalid_attrs %{text: nil}
 
-    def tag_fixture(attrs \\ %{}) do
-      {:ok, tag} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Questions.create_tag()
-
-      tag
-    end
-
-    test "list_tags/0 returns all tags" do
-      tag = tag_fixture()
+    test "list_tags/0 returns all tags", %{tag: tag} do
       assert Questions.list_tags() == [tag]
     end
 
-    test "get_tag!/1 returns the tag with given id" do
-      tag = tag_fixture()
+    test "get_tag!/1 returns the tag with given id", %{tag: tag} do
       assert Questions.get_tag!(tag.id) == tag
     end
 
@@ -101,26 +85,22 @@ defmodule Kekoverflow.QuestionsTest do
       assert {:error, %Ecto.Changeset{}} = Questions.create_tag(@invalid_attrs)
     end
 
-    test "update_tag/2 with valid data updates the tag" do
-      tag = tag_fixture()
+    test "update_tag/2 with valid data updates the tag", %{tag: tag} do
       assert {:ok, %Tag{} = tag} = Questions.update_tag(tag, @update_attrs)
       assert tag.text == "some updated text"
     end
 
-    test "update_tag/2 with invalid data returns error changeset" do
-      tag = tag_fixture()
+    test "update_tag/2 with invalid data returns error changeset", %{tag: tag} do
       assert {:error, %Ecto.Changeset{}} = Questions.update_tag(tag, @invalid_attrs)
       assert tag == Questions.get_tag!(tag.id)
     end
 
-    test "delete_tag/1 deletes the tag" do
-      tag = tag_fixture()
+    test "delete_tag/1 deletes the tag", %{tag: tag} do
       assert {:ok, %Tag{}} = Questions.delete_tag(tag)
       assert_raise Ecto.NoResultsError, fn -> Questions.get_tag!(tag.id) end
     end
 
-    test "change_tag/1 returns a tag changeset" do
-      tag = tag_fixture()
+    test "change_tag/1 returns a tag changeset", %{tag: tag} do
       assert %Ecto.Changeset{} = Questions.change_tag(tag)
     end
   end

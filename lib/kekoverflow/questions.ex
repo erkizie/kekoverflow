@@ -18,7 +18,11 @@ defmodule Kekoverflow.Questions do
 
   """
   def list_questions do
-    Repo.all(Question) |> Repo.preload(:tags)
+    Repo.all(Question)
+    |> Repo.preload(answers: [:user])
+    |> Repo.preload(:comments)
+    |> Repo.preload(:tags)
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -36,9 +40,10 @@ defmodule Kekoverflow.Questions do
 
   """
   def get_question!(id), do: Repo.get!(Question, id)
-                             |> Repo.preload(:answers)
+                             |> Repo.preload(answers: [:user])
                              |> Repo.preload(:comments)
                              |> Repo.preload(:tags)
+                             |> Repo.preload(:user)
 
   @doc """
   Creates a question.
@@ -117,7 +122,7 @@ defmodule Kekoverflow.Questions do
 
   """
   def list_tags do
-    Repo.all(Tag)
+    Repo.all(Tag) |> Repo.preload(:questions)
   end
 
   @doc """

@@ -2,13 +2,17 @@ defmodule KekoverflowWeb.AnswerController do
   use KekoverflowWeb, :controller
   import Ecto
 
-  alias Kekoverflow.{Repo, Answers.Answer, Answers, Questions, Questions.Question}
+  alias Kekoverflow.{Repo, Answers.Answer, Answers, Questions, Questions.Question, Comments.Comment}
 
   action_fallback KekoverflowWeb.FallbackController
 
   def create(conn, %{"answer" => answer_params, "question_id" => question_id}) do
     user = conn.assigns.current_user
-    question = Repo.get!(Question, question_id) |> Repo.preload([:user, :answers])
+    question = Questions.get_question!(question_id) |> Repo.preload([:user, :answers])
+
+    answers = prepare_answers(question)
+    best_answer = prepare_best_answer(question)
+    comment_changeset = prepare_comment_changeset(question)
 
     changeset = Answer.changeset(%Answer{user_id: user.id, question_id: String.to_integer(question_id)}, answer_params)
 
@@ -19,7 +23,7 @@ defmodule KekoverflowWeb.AnswerController do
         |> redirect(to: Routes.question_path(conn, :show, question_id))
 
       {:error, changeset} ->
-        render(conn, KekoverflowWeb.QuestionView, "show.html", question: question, comment_changeset: changeset)
+        render(conn, KekoverflowWeb.QuestionView, "show.html", question: question, answers: answers, answer_changeset: changeset, comment_changeset: changeset, best_answer: best_answer)
     end
   end
 
@@ -66,15 +70,15 @@ defmodule KekoverflowWeb.AnswerController do
           |> put_flash(:info, "Answer updated successfully.")
           |> redirect(to: Routes.question_path(conn, :show, question))
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          render(conn, "edit.html", answer: answer, changeset: changeset)
+        {:error, changeset} ->
+          render(conn, "edit.html", answer: answer, question: question, changeset: changeset)
       end
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id, "question_id" => question_id}) do
     answer = Answers.get_answer!(id)
-    question = Repo.get(Question, answer.question_id)
+    question = Questions.get_question!(question_id)
     user = conn.assigns.current_user
 
     with :ok <- Bodyguard.permit(Answers, :delete_answer, user, answer),
@@ -88,5 +92,28 @@ defmodule KekoverflowWeb.AnswerController do
       |> put_flash(:info, "Answer deleted successfully.")
       |> redirect(to: Routes.question_path(conn, :show, question))
     end
+  end
+
+  defp prepare_answers(question) do
+    answers = for answer <- question.answers do
+      answer |> Repo.preload(:comments)
+    end
+  end
+
+  defp prepare_best_answer(question) do
+    best_answer =
+      if question.best_answer_id do
+        Answers.get_answer!(question.best_answer_id)
+        |> Repo.preload(:comments)
+      else
+        nil
+      end
+  end
+
+  defp prepare_comment_changeset(question) do
+    comment_changeset = question
+                        |> Ecto.build_assoc(:answers)
+                        |> Ecto.build_assoc(:comments)
+                        |> Comment.changeset()
   end
 end

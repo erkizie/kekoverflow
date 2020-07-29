@@ -4,9 +4,10 @@ defmodule Kekoverflow.Comments.Comment do
 
   schema "comments" do
     field :body, :string
-    field :user_id, :id
-    field :question_id, :id
-    field :answer_id, :id
+
+    belongs_to :user, Kekoverflow.Users.User
+    belongs_to :question, Kekoverflow.Questions.Question
+    belongs_to :answer, Kekoverflow.Answers.Answer
 
     timestamps()
   end
